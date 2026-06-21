@@ -375,9 +375,9 @@ gcloud run deploy ecopulse-ai --source . --platform managed
 
 ---
 
-## 📝 License
+## 📝 Created By
 
-This project is licensed under the **MIT License**. See the `LICENSE` file for more details.
+This project is created by **Arpit Chaurasia**. 
 
 ---
 
