@@ -1,6 +1,7 @@
-// ============================================================
-// EcoPulse AI — Built-in Recommendations Database
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Built-in Recommendations Database.
+ * Curated pool of eco-friendly recommendations across all lifestyle categories.
+ */
 
 import type { Recommendation } from '../types';
 

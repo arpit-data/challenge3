@@ -1,7 +1,7 @@
-// ============================================================
-// EcoPulse AI — Resources Page
-// Educational content and sustainability learning hub
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Resources Page.
+ * Educational content and sustainability learning hub.
+ */
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -153,6 +153,7 @@ const RESOURCES: Resource[] = [
 
 const CATEGORIES = ['All', 'Basics', 'Deep Dive', 'Tips', 'Guide', 'Transparency'];
 
+/** Resources page with filterable sustainability learning resources and expandable detail cards. */
 export default function ResourcesPage() {
   const theme = useTheme();
   const [selectedCategory, setSelectedCategory] = useState('All');

@@ -1,7 +1,7 @@
-// ============================================================
-// EcoPulse AI — Challenge Center Page
-// Browse, start, and track eco-challenges
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Challenge Center Page.
+ * Browse, start, and track eco-challenges.
+ */
 
 import React, { useState, useMemo, useCallback } from 'react';
 import {
@@ -38,44 +38,11 @@ import {
 } from '../theme/animations';
 import { useChallengeStore } from '../stores/appStore';
 import { BUILT_IN_CHALLENGES } from '../data/challenges';
+import { DIFFICULTY_COLORS, CATEGORY_EMOJI } from '../constants/ui';
+import { useGlassStyle } from '../hooks/useGlassStyle';
 import type { Challenge, ChallengeProgress } from '../types';
 
-// ---- Difficulty config ----
 
-const DIFFICULTY_COLORS: Record<string, string> = {
-  easy: '#52B788',
-  moderate: '#F9A826',
-  advanced: '#E63946',
-};
-
-const CATEGORY_EMOJI: Record<string, string> = {
-  transportation: '🚲',
-  waste: '♻️',
-  energy: '⚡',
-  food: '🌱',
-  shopping: '🛍️',
-  water: '💧',
-  travel: '✈️',
-};
-
-// ---- Glassmorphism ----
-
-const useGlassCard = () => {
-  const theme = useTheme();
-  return useMemo(() => ({
-    background: theme.palette.mode === 'dark'
-      ? `linear-gradient(145deg, ${alpha('#1A2940', 0.85)}, ${alpha('#121E32', 0.65)})`
-      : `linear-gradient(145deg, ${alpha('#FFFFFF', 0.9)}, ${alpha('#F0F7F4', 0.7)})`,
-    backdropFilter: 'blur(24px)',
-    WebkitBackdropFilter: 'blur(24px)',
-    border: `1px solid ${alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.15 : 0.1)}`,
-    borderRadius: '20px',
-    boxShadow: theme.palette.mode === 'dark'
-      ? `0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 ${alpha('#52B788', 0.06)}`
-      : '0 8px 32px rgba(27,67,50,0.08), 0 2px 8px rgba(27,67,50,0.04)',
-    transition: 'all 0.35s cubic-bezier(0.4,0,0.2,1)',
-  }), [theme]);
-};
 
 // ---- ChallengeCard for available challenges ----
 
@@ -87,7 +54,7 @@ interface AvailableChallengeCardProps {
 
 const AvailableChallengeCard = React.memo<AvailableChallengeCardProps>(({ challenge, isStarted, onStart }) => {
   const theme = useTheme();
-  const glass = useGlassCard();
+  const glass = useGlassStyle();
   const diffColor = DIFFICULTY_COLORS[challenge.difficulty] || '#52B788';
   const catEmoji = CATEGORY_EMOJI[challenge.category] || '🌿';
 
@@ -232,7 +199,7 @@ interface ActiveChallengeCardProps {
 
 const ActiveChallengeCard = React.memo<ActiveChallengeCardProps>(({ challenge, progress, onCompleteDay, onAbandon }) => {
   const theme = useTheme();
-  const glass = useGlassCard();
+  const glass = useGlassStyle();
   const completedCount = progress.completedDays.length;
   const totalDays = challenge.durationDays;
   const progressPercent = Math.round((completedCount / totalDays) * 100);
@@ -379,6 +346,7 @@ ActiveChallengeCard.displayName = 'ActiveChallengeCard';
 
 // ---- Main ChallengeCenterPage ----
 
+/** Challenge Center page for browsing, starting, and tracking eco-challenges. */
 const ChallengeCenterPage: React.FC = () => {
   const theme = useTheme();
   const { activeProgresses, startChallenge, completeChallengeDay, abandonChallenge } = useChallengeStore();

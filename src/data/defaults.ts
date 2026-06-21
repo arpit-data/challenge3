@@ -1,6 +1,7 @@
-// ============================================================
-// EcoPulse AI — Default Data Values
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Default Data Values.
+ * Factory functions and sample data for initializing application state.
+ */
 
 import type { AssessmentData } from '../types';
 

@@ -1,7 +1,7 @@
-// ============================================================
-// EcoPulse AI — Logger Utility
-// Production-safe, level-based logging with prefixed messages
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Logger Utility.
+ * Production-safe, level-based logging with prefixed messages.
+ */
 
 /**
  * Log level enum to control verbosity.

@@ -1,7 +1,8 @@
-// ============================================================
-// EcoPulse AI — Carbon Calculator Engine
-// Pure functions for calculating carbon footprint by category
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Carbon Calculator Engine.
+ * Pure functions for calculating carbon footprint by category
+ * (transport, diet, energy, shopping, waste, water, travel).
+ */
 
 import type {
   AssessmentData,

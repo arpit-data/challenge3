@@ -1,6 +1,7 @@
-// ============================================================
-// EcoPulse AI — Achievements System
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Achievements System.
+ * Pre-defined achievements and unlock logic for eco-friendly milestones.
+ */
 
 import type { Achievement, CarbonReport, Goal, Recommendation } from '../types';
 import {

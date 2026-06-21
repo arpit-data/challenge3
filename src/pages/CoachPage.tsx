@@ -1,7 +1,7 @@
-// ============================================================
-// EcoPulse AI — AI Eco Coach Page
-// Gemini-powered sustainability coach with chat interface
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — AI Eco Coach Page.
+ * Gemini-powered sustainability coach with chat interface.
+ */
 
 // Security: Chat messages are rendered using escapeHtml + React
 // to prevent XSS via dangerouslySetInnerHTML.
@@ -65,6 +65,7 @@ function formatMessage(text: string): React.ReactNode[] {
   });
 }
 
+/** AI Eco Coach page with Gemini-powered chat, suggested prompts, and API key management. */
 export default function CoachPage() {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
@@ -95,9 +96,11 @@ export default function CoachPage() {
     }
   }, [messages, isLoading]);
 
-  // Send welcome message on first visit
+  // Send welcome message on first visit — uses a ref guard for mount-only behavior
+  const welcomeSentRef = useRef(false);
   useEffect(() => {
-    if (messages.length === 0) {
+    if (!welcomeSentRef.current && messages.length === 0) {
+      welcomeSentRef.current = true;
       addMessage({
         role: 'assistant',
         content: `Welcome to your AI Eco Coach! 🌿\n\nI'm here to help you understand and reduce your carbon footprint. ${
@@ -107,8 +110,7 @@ export default function CoachPage() {
         }\n\nAsk me anything about sustainability, your impact, or how to make greener choices. 💚`,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [messages.length, addMessage, currentReport]);
 
   /** Handle sending a message */
   const handleSend = useCallback(async (overrideText?: string) => {

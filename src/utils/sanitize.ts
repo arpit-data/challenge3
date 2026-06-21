@@ -1,7 +1,7 @@
-// ============================================================
-// EcoPulse AI — Input Sanitization & Security Utilities
-// XSS prevention, API key validation, and rate limiting
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Input Sanitization & Security Utilities.
+ * XSS prevention, API key validation, and rate limiting.
+ */
 
 /**
  * Strips HTML tags from user input to prevent XSS attacks.

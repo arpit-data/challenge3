@@ -1,7 +1,7 @@
-// ============================================================
-// EcoPulse AI — Goals Page
-// Track personal sustainability goals with streaks & check-ins
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Goals Page.
+ * Track personal sustainability goals with streaks & check-ins.
+ */
 
 import React, { useState, useCallback, useMemo } from 'react';
 import {
@@ -48,6 +48,7 @@ import {
   fadeInUp,
 } from '../theme/animations';
 import { useGoalStore } from '../stores/appStore';
+import { useGlassStyle } from '../hooks/useGlassStyle';
 import type { CarbonCategory, Goal } from '../types';
 
 // ---- Category helpers ----
@@ -80,24 +81,7 @@ const GOAL_SUGGESTIONS: GoalSuggestion[] = [
   { title: 'Shorter Showers', description: 'Keep showers under 5 minutes to save water and energy.', category: 'water', targetFrequency: 'Daily', emoji: '🚿' },
 ];
 
-// ---- Glassmorphism card styling ----
 
-const useGlassCard = () => {
-  const theme = useTheme();
-  return useMemo(() => ({
-    background: theme.palette.mode === 'dark'
-      ? `linear-gradient(145deg, ${alpha('#1A2940', 0.85)}, ${alpha('#121E32', 0.65)})`
-      : `linear-gradient(145deg, ${alpha('#FFFFFF', 0.9)}, ${alpha('#F0F7F4', 0.7)})`,
-    backdropFilter: 'blur(24px)',
-    WebkitBackdropFilter: 'blur(24px)',
-    border: `1px solid ${alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.15 : 0.1)}`,
-    borderRadius: '20px',
-    boxShadow: theme.palette.mode === 'dark'
-      ? `0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 ${alpha('#52B788', 0.06)}`
-      : '0 8px 32px rgba(27,67,50,0.08), 0 2px 8px rgba(27,67,50,0.04)',
-    transition: 'all 0.35s cubic-bezier(0.4,0,0.2,1)',
-  }), [theme]);
-};
 
 // ---- GoalCard component ----
 
@@ -110,7 +94,7 @@ interface GoalCardProps {
 
 const GoalCard = React.memo<GoalCardProps>(({ goal, onCheckin, onPause, onRemove }) => {
   const theme = useTheme();
-  const glass = useGlassCard();
+  const glass = useGlassStyle();
   const config = CATEGORY_CONFIG[goal.category];
 
   // Check if already checked in today
@@ -327,9 +311,10 @@ GoalCard.displayName = 'GoalCard';
 
 // ---- Main GoalsPage ----
 
+/** Goals page for creating, tracking, and managing sustainability goals with streak tracking. */
 const GoalsPage: React.FC = () => {
   const theme = useTheme();
-  const glass = useGlassCard();
+  const glass = useGlassStyle();
   const { goals, addGoal, checkinGoal, pauseGoal, removeGoal } = useGoalStore();
 
   // Dialog state

@@ -1,9 +1,9 @@
-// ============================================================
-// EcoPulse AI — Achievements Page
-// Badge collection with locked/unlocked states & tier system
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Achievements Page.
+ * Badge collection with locked/unlocked states & tier system.
+ */
 
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import {
   Box,
   Typography,
@@ -201,15 +201,20 @@ BadgeCard.displayName = 'BadgeCard';
 
 // ---- Main AchievementsPage ----
 
+/** Achievements page displaying unlockable badge collection with tier system and detail dialog. */
 const AchievementsPage: React.FC = () => {
   const theme = useTheme();
   const { unlockedAchievements, checkAndUnlock } = useAchievementStore();
   const [selectedAchievement, setSelectedAchievement] = useState<Achievement | null>(null);
 
-  // Check for newly unlockable achievements on mount
+  // Check for newly unlockable achievements on mount — ref guard ensures single execution
+  const checkedRef = useRef(false);
   useEffect(() => {
-    checkAndUnlock();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    if (!checkedRef.current) {
+      checkedRef.current = true;
+      checkAndUnlock();
+    }
+  }, [checkAndUnlock]);
 
   // Build a lookup for unlocked achievements
   const unlockedMap = useMemo(() => {

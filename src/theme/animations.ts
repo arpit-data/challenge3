@@ -1,7 +1,7 @@
-// ============================================================
-// EcoPulse AI — Framer Motion Animation Variants
-// Consistent, accessible, performant animations
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Framer Motion Animation Variants.
+ * Consistent, accessible, performant animations.
+ */
 
 import type { Variants, Transition } from 'framer-motion';
 

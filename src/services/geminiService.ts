@@ -1,8 +1,8 @@
-// ============================================================
-// EcoPulse AI — Gemini AI Service
-// Google Gemini 2.5 Flash integration for Eco Coach,
-// AI-powered recommendations, and weekly insights.
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Gemini AI Service.
+ * Google Gemini 2.5 Flash integration for Eco Coach chat,
+ * AI-powered recommendations, and weekly insights.
+ */
 
 import type { GoogleGenAI as GoogleGenAIType } from '@google/genai';
 import type { CarbonReport, Goal, Recommendation } from '../types';
@@ -18,6 +18,15 @@ import {
   GEMINI_MODEL,
   SUMMARY_RATE_LIMIT,
 } from '../constants';
+
+/** Summarize completed recommendation stats from a list of recommendations. */
+function getRecommendationStats(recommendations: Recommendation[]): { completedCount: number; totalSavedKg: number } {
+  const completed = recommendations.filter((r) => r.completed);
+  return {
+    completedCount: completed.length,
+    totalSavedKg: completed.reduce((s, r) => s + r.estimatedReductionKg, 0),
+  };
+}
 
 const SYSTEM_PROMPT = `You are EcoPulse AI, a positive, empowering sustainability coach. Your role is to help people understand and reduce their carbon footprint through practical, achievable actions.
 
@@ -92,10 +101,7 @@ function buildUserContext(
     .map((g) => `${g.title} (streak: ${g.streak} days)`)
     .join(', ');
 
-  const completedRecs = recommendations.filter((r) => r.completed).length;
-  const totalSaved = recommendations
-    .filter((r) => r.completed)
-    .reduce((s, r) => s + r.estimatedReductionKg, 0);
+  const { completedCount: completedRecs, totalSavedKg: totalSaved } = getRecommendationStats(recommendations);
 
   return `USER CONTEXT:
 - Annual Footprint: ${report.totalTonnesCO2e} tonnes CO₂e/year (${report.totalKgCO2e} kg)
@@ -326,10 +332,7 @@ function getWeeklySummaryFallback(
   goals: Goal[],
   recommendations: Recommendation[]
 ): string {
-  const completedRecs = recommendations.filter((r) => r.completed).length;
-  const totalSaved = recommendations
-    .filter((r) => r.completed)
-    .reduce((s, r) => s + r.estimatedReductionKg, 0);
+  const { completedCount: completedRecs, totalSavedKg: totalSaved } = getRecommendationStats(recommendations);
   const activeGoals = goals.filter((g) => g.status === 'active').length;
 
   return `📊 **Your Weekly Sustainability Snapshot**\n\n` +

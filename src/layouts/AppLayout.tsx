@@ -1,7 +1,7 @@
-// ============================================================
-// EcoPulse AI — App Layout
-// Main layout with navigation bar and bottom nav
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — App Layout.
+ * Main layout with responsive navigation drawer, bottom nav, and footer.
+ */
 
 import { useState } from 'react';
 import type { JSX } from 'react';
@@ -62,6 +62,7 @@ const DRAWER_ITEMS = [
   { label: 'Settings', path: '/settings', icon: <SettingsRoundedIcon /> },
 ];
 
+/** Application shell layout with responsive navigation drawer, bottom nav, and footer. */
 export default function AppLayout() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));

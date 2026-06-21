@@ -1,7 +1,7 @@
-// ============================================================
-// EcoPulse AI — Landing Page
-// Premium 3D hero with glassmorphism and nature aesthetics
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Landing Page.
+ * Premium 3D hero with glassmorphism and nature aesthetics.
+ */
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -60,6 +60,7 @@ const STATS = [
   { value: '6', label: 'Challenges' },
 ];
 
+/** Landing page with hero section, feature showcase, CTA, and footer. */
 export default function LandingPage() {
   const theme = useTheme();
   const navigate = useNavigate();

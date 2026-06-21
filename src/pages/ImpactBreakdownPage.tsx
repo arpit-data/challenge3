@@ -1,7 +1,7 @@
-// ============================================================
-// EcoPulse AI — Impact Breakdown Page
-// Deep-dive into each carbon category with 3D card flip effects
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Impact Breakdown Page.
+ * Deep-dive into each carbon category with 3D card flip effects.
+ */
 
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -435,6 +435,7 @@ CategoryCard.displayName = 'CategoryCard';
 
 // ---- Main Page ----
 
+/** Impact breakdown page showing per-category emissions analysis with expandable detail cards. */
 const ImpactBreakdownPage: React.FC = () => {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';

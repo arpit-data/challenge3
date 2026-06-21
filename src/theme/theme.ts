@@ -1,7 +1,7 @@
-// ============================================================
-// EcoPulse AI — Theme System
-// Material Design 3 inspired, nature-palette, 3D-ready theme
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Theme System.
+ * Material Design 3 inspired, nature-palette, 3D-ready theme.
+ */
 
 import { createTheme, alpha } from '@mui/material/styles';
 

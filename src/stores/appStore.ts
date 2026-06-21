@@ -1,7 +1,8 @@
-// ============================================================
-// EcoPulse AI — Application Store (Zustand)
-// Centralized state with localStorage persistence
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Application Store (Zustand).
+ * Centralized state management with localStorage persistence for carbon data,
+ * user profile, goals, achievements, challenges, and assessment progress.
+ */
 
 /** All EcoPulse localStorage key prefixes for targeted cleanup */
 const ECOPULSE_STORAGE_KEYS = [

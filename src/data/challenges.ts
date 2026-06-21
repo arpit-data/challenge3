@@ -1,6 +1,7 @@
-// ============================================================
-// EcoPulse AI — Challenges Database
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Challenges Database.
+ * Pre-built weekly sustainability challenges with daily tasks.
+ */
 
 import type { Challenge } from '../types';
 

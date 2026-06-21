@@ -1,7 +1,7 @@
-// ============================================================
-// EcoPulse AI — App Shell
-// Root component with routing, theme, and layout
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — App Shell.
+ * Root component with React Router routing, MUI theme provider, and layout.
+ */
 
 import React, { useMemo, lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';

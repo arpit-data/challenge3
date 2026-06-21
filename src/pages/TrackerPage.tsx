@@ -1,9 +1,9 @@
-// ============================================================
-// EcoPulse AI — Tracker Page
-// "Every Action Counts" — Track eco actions and challenges
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Tracker Page.
+ * "Every Action Counts" — Track eco actions and challenges.
+ */
 
-import { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Box from '@mui/material/Box';
@@ -21,7 +21,8 @@ import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded';
 import { useCarbonStore, useChallengeStore } from '../stores/appStore';
 import { BUILT_IN_CHALLENGES } from '../data/challenges';
 import { staggerContainer, staggerItem } from '../theme/animations';
-import type { Recommendation, Difficulty, Impact } from '../types';
+import { DIFFICULTY_COLORS, IMPACT_COLORS, getDifficultyLabel } from '../constants/ui';
+import type { Recommendation } from '../types';
 
 type FilterType = 'all' | 'easy' | 'high' | 'moderate' | 'advanced';
 
@@ -33,23 +34,9 @@ const FILTERS: { key: FilterType; label: string }[] = [
   { key: 'advanced', label: 'Advanced' },
 ];
 
-const DIFFICULTY_COLORS: Record<Difficulty, string> = {
-  easy: '#52B788',
-  moderate: '#F9A826',
-  advanced: '#E63946',
-};
 
-const IMPACT_COLORS: Record<Impact, string> = {
-  low: '#90A4AE',
-  medium: '#48CAE4',
-  high: '#2D6A4F',
-};
-
-function getDifficultyLabel(d: Difficulty): string {
-  return d === 'easy' ? 'Low Effort' : d === 'moderate' ? 'Moderate' : 'Advanced';
-}
-
-export default function TrackerPage() {
+/** Tracker page displaying eco actions, weekly progress, and active challenges. */
+export default function TrackerPage(): React.JSX.Element {
   const theme = useTheme();
   const navigate = useNavigate();
   const recommendations = useCarbonStore((s) => s.recommendations);

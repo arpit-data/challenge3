@@ -1,9 +1,9 @@
-// ============================================================
-// EcoPulse AI — Dashboard Page
-// Stunning 3D glassmorphism dashboard with animated charts
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Dashboard Page.
+ * Stunning 3D glassmorphism dashboard with animated charts.
+ */
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -22,7 +22,6 @@ import {
   TrendingDown as TrendingDownIcon,
   Park as ParkIcon,
   EnergySavingsLeafRounded as EcoIcon,
-  PlayArrowRounded as PlayIcon,
   ArrowForwardRounded as ArrowForwardIcon,
   AutoAwesomeRounded as SparkleIcon,
   LightbulbRounded as LightbulbIcon,
@@ -30,7 +29,7 @@ import {
   BarChartRounded as BarChartIcon,
   InfoOutlined as InfoIcon,
 } from '@mui/icons-material';
-import { motion, useMotionValue, animate } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   PieChart,
   Pie,
@@ -46,221 +45,22 @@ import {
 import { useCarbonStore } from '../stores/appStore';
 import { treesEquivalent } from '../engine/carbonCalculator';
 import {
-  pageVariants,
   staggerContainer,
-  staggerItem,
   cardVariants,
   fadeInUp,
+  pageVariants,
 } from '../theme/animations';
+import GlassCard from '../components/GlassCard';
+import {
+  AnimatedCounter,
+  WelcomeState,
+  PieTooltipContent,
+} from './dashboard/DashboardHelpers';
+import { getEcoLevel, generateMonthlyTrend } from './dashboard/dashboardUtils';
 
-// ---- Animated Counter Component ----
 
-const AnimatedCounter: React.FC<{
-  value: number;
-  decimals?: number;
-  duration?: number;
-  suffix?: string;
-}> = React.memo(({ value, decimals = 1, duration = 2, suffix = '' }) => {
-  const motionVal = useMotionValue(0);
-  const [display, setDisplay] = useState('0');
 
-  useEffect(() => {
-    const controls = animate(motionVal, value, {
-      duration,
-      ease: [0.4, 0, 0.2, 1],
-      onUpdate: (v) => setDisplay(v.toFixed(decimals)),
-    });
-    return controls.stop;
-  }, [value, decimals, duration, motionVal]);
-
-  return (
-    <span>
-      {display}
-      {suffix}
-    </span>
-  );
-});
-AnimatedCounter.displayName = 'AnimatedCounter';
-
-// ---- Eco Level Helper ----
-
-function getEcoLevel(tonnesCO2e: number): { name: string; emoji: string; color: string } {
-  if (tonnesCO2e <= 2) return { name: 'Eco Champion', emoji: '🌳', color: '#2D6A4F' };
-  if (tonnesCO2e <= 4) return { name: 'Young Oak', emoji: '🌿', color: '#40916C' };
-  if (tonnesCO2e <= 6) return { name: 'Growing Tree', emoji: '🌱', color: '#52B788' };
-  if (tonnesCO2e <= 8) return { name: 'Seedling', emoji: '☘️', color: '#74C69D' };
-  return { name: 'Sapling', emoji: '🌾', color: '#95D5B2' };
-}
-
-// ---- Monthly Trend Sample Data Generator ----
-
-function generateMonthlyTrend(totalKg: number): { month: string; value: number }[] {
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const now = new Date();
-  const currentMonth = now.getMonth();
-  const monthlyAvg = totalKg / 12;
-
-  return months.slice(0, currentMonth + 1).map((month, i) => ({
-    month,
-    // Simulate a slight downward trend with natural variation
-    value: Math.round(monthlyAvg * (1.15 - i * 0.025) + (Math.random() - 0.5) * monthlyAvg * 0.15),
-  }));
-}
-
-// ---- 3D Glass Card Wrapper ----
-
-const GlassCard: React.FC<{
-  children: React.ReactNode;
-  sx?: object;
-  id?: string;
-  onClick?: () => void;
-}> = React.memo(({ children, sx, id, onClick }) => {
-  const theme = useTheme();
-  const isDark = theme.palette.mode === 'dark';
-
-  return (
-    <motion.div variants={staggerItem}>
-      <Card
-        id={id}
-        onClick={onClick}
-        sx={{
-          position: 'relative',
-          overflow: 'hidden',
-          background: isDark
-            ? `linear-gradient(145deg, ${alpha('#1A2940', 0.85)}, ${alpha('#121E32', 0.65)})`
-            : `linear-gradient(145deg, rgba(255,255,255,0.92), rgba(245,250,247,0.65))`,
-          backdropFilter: 'blur(24px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-          border: `1px solid ${isDark ? alpha('#52B788', 0.12) : alpha('#2D6A4F', 0.08)}`,
-          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-          cursor: onClick ? 'pointer' : 'default',
-          perspective: '1000px',
-          transformStyle: 'preserve-3d',
-          '&:hover': {
-            transform: 'translateY(-6px) translateZ(10px) scale(1.015)',
-            boxShadow: isDark
-              ? `0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px ${alpha('#52B788', 0.15)}, inset 0 1px 0 ${alpha('#52B788', 0.1)}`
-              : `0 20px 60px rgba(27,67,50,0.12), 0 8px 24px rgba(27,67,50,0.08), inset 0 1px 0 rgba(255,255,255,0.5)`,
-          },
-          ...sx,
-        }}
-      >
-        {children}
-      </Card>
-    </motion.div>
-  );
-});
-GlassCard.displayName = 'GlassCard';
-
-// ---- Welcome State (No Report) ----
-
-const WelcomeState: React.FC = React.memo(() => {
-  const theme = useTheme();
-  return (
-    <motion.div
-      variants={pageVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-    >
-      <Box
-        sx={{
-          minHeight: '70vh',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          textAlign: 'center',
-          px: 3,
-        }}
-      >
-        <motion.div
-          animate={{ y: [0, -12, 0] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <Box sx={{ fontSize: '5rem', mb: 2 }}>🌍</Box>
-        </motion.div>
-
-        <Typography
-          variant="h3"
-          sx={{
-            fontWeight: 800,
-            background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            mb: 2,
-          }}
-        >
-          Welcome to EcoPulse AI
-        </Typography>
-
-        <Typography
-          variant="h6"
-          color="text.secondary"
-          sx={{ maxWidth: 480, mb: 4, lineHeight: 1.6 }}
-        >
-          Take your first carbon footprint assessment to unlock your personalized dashboard,
-          insights, and recommendations.
-        </Typography>
-
-        <Button
-          id="btn-start-assessment"
-          variant="contained"
-          size="large"
-          startIcon={<PlayIcon />}
-          href="/assessment"
-          sx={{
-            px: 5,
-            py: 1.8,
-            fontSize: '1.1rem',
-            borderRadius: 3,
-            background: `linear-gradient(135deg, #2D6A4F 0%, #40916C 100%)`,
-            boxShadow: `0 8px 32px ${alpha('#2D6A4F', 0.35)}`,
-            '&:hover': {
-              boxShadow: `0 12px 40px ${alpha('#2D6A4F', 0.5)}`,
-              transform: 'translateY(-2px)',
-            },
-          }}
-        >
-          Start Assessment
-        </Button>
-      </Box>
-    </motion.div>
-  );
-});
-WelcomeState.displayName = 'WelcomeState';
-
-// ---- Custom Pie Chart Tooltip ----
-
-const PieTooltipContent: React.FC<{ active?: boolean; payload?: Array<{ payload: { label: string; icon: string; kgCO2e: number; percentage: number } }> }> = ({
-  active,
-  payload,
-}) => {
-  if (!active || !payload?.length) return null;
-  const data = payload[0].payload;
-  return (
-    <Box
-      sx={{
-        background: 'rgba(255,255,255,0.95)',
-        backdropFilter: 'blur(12px)',
-        borderRadius: 2,
-        p: 1.5,
-        boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
-        border: '1px solid rgba(0,0,0,0.06)',
-      }}
-    >
-      <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-        {data.icon} {data.label}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        {data.kgCO2e.toLocaleString()} kg CO₂e ({data.percentage}%)
-      </Typography>
-    </Box>
-  );
-};
-
-// ---- Main Dashboard ----
-
+/** Main dashboard page with carbon footprint overview, charts, benchmarks, and recommendations. */
 const DashboardPage: React.FC = () => {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
@@ -660,7 +460,7 @@ const DashboardPage: React.FC = () => {
                         border: '1px solid rgba(0,0,0,0.06)',
                         boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
                       }}
-                      formatter={((value: number) => [`${value} kg CO₂e`, 'Emissions']) as any}
+                      formatter={(value: unknown): [string, string] => [`${Number(value)} kg CO₂e`, 'Emissions']}
                     />
                     <Area
                       type="monotone"

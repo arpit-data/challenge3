@@ -1,7 +1,7 @@
-// ============================================================
-// EcoPulse AI — Community Page
-// Community insights, leaderboard, and social engagement
-// ============================================================
+/**
+ * @fileoverview EcoPulse AI — Community Page.
+ * Community insights, leaderboard, and social engagement.
+ */
 
 import React, { useState, useMemo, useCallback } from 'react';
 import {
@@ -53,9 +53,9 @@ import type { LeaderboardEntry } from '../types';
 import {
   pageVariants,
   staggerContainer,
-  staggerItem,
   fadeInUp,
 } from '../theme/animations';
+import GlassCard from '../components/GlassCard';
 
 // ---- Animated Number Display ----
 
@@ -71,47 +71,6 @@ const AnimatedDigit: React.FC<{ value: string }> = React.memo(({ value }) => (
 ));
 AnimatedDigit.displayName = 'AnimatedDigit';
 
-// ---- 3D Glass Card Wrapper ----
-
-const GlassCard: React.FC<{
-  children: React.ReactNode;
-  sx?: object;
-  id?: string;
-}> = React.memo(({ children, sx, id }) => {
-  const theme = useTheme();
-  const isDark = theme.palette.mode === 'dark';
-
-  return (
-    <motion.div variants={staggerItem}>
-      <Card
-        id={id}
-        sx={{
-          position: 'relative',
-          overflow: 'hidden',
-          background: isDark
-            ? `linear-gradient(145deg, ${alpha('#1A2940', 0.85)}, ${alpha('#121E32', 0.65)})`
-            : `linear-gradient(145deg, rgba(255,255,255,0.92), rgba(245,250,247,0.65))`,
-          backdropFilter: 'blur(24px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-          border: `1px solid ${isDark ? alpha('#52B788', 0.12) : alpha('#2D6A4F', 0.08)}`,
-          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-          perspective: '1000px',
-          transformStyle: 'preserve-3d',
-          '&:hover': {
-            transform: 'translateY(-6px) translateZ(10px) scale(1.015)',
-            boxShadow: isDark
-              ? `0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px ${alpha('#52B788', 0.15)}`
-              : `0 20px 60px rgba(27,67,50,0.12), 0 8px 24px rgba(27,67,50,0.08)`,
-          },
-          ...sx,
-        }}
-      >
-        {children}
-      </Card>
-    </motion.div>
-  );
-});
-GlassCard.displayName = 'GlassCard';
 
 // ---- Rank Badge ----
 
@@ -282,6 +241,7 @@ LeaderboardTable.displayName = 'LeaderboardTable';
 
 // ---- Main Page ----
 
+/** Community page with global stats, leaderboard, comparison charts, and social sharing. */
 const CommunityPage: React.FC = () => {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
@@ -448,7 +408,7 @@ const CommunityPage: React.FC = () => {
                         border: '1px solid rgba(0,0,0,0.06)',
                         boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
                       }}
-                      formatter={((value: number) => [`${(value / 1000).toFixed(1)} tonnes CO₂e`, '']) as any}
+                      formatter={(value: unknown): [string, string] => [`${(Number(value) / 1000).toFixed(1)} tonnes CO₂e`, '']}
                     />
                     <Bar dataKey="value" radius={[8, 8, 0, 0]} barSize={48} animationDuration={1200}>
                       {comparisonData.map((entry, idx) => (

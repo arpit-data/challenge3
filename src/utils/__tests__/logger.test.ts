@@ -27,7 +27,7 @@ describe('logger — method existence', () => {
   });
 
   it('has exactly 4 methods', () => {
-    const methods = Object.keys(logger).filter((k) => typeof (logger as any)[k] === 'function');
+    const methods = Object.keys(logger).filter((k) => typeof (logger as Record<string, unknown>)[k] === 'function');
     expect(methods).toHaveLength(4);
     expect(methods.sort()).toEqual(['debug', 'error', 'info', 'warn']);
   });
@@ -92,19 +92,19 @@ describe('logger — immutability', () => {
 
   it('cannot add new properties', () => {
     expect(() => {
-      (logger as any).custom = () => {};
+      (logger as Record<string, unknown>).custom = () => {};
     }).toThrow();
   });
 
   it('cannot reassign existing methods', () => {
     expect(() => {
-      (logger as any).debug = () => {};
+      (logger as Record<string, unknown>).debug = () => {};
     }).toThrow();
   });
 
   it('cannot delete methods', () => {
     expect(() => {
-      delete (logger as any).debug;
+      delete (logger as Record<string, unknown>).debug;
     }).toThrow();
   });
 });
