@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🌿</text></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="EcoPulse AI — Turn everyday choices into meaningful climate action. Track, understand, and reduce your carbon footprint with AI-powered insights." />
+    <meta name="theme-color" content="#2D6A4F" />
+
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self';
+                   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+                   font-src 'self' https://fonts.gstatic.com;
+                   img-src 'self' data: blob:;
+                   connect-src 'self' https://generativelanguage.googleapis.com;
+                   frame-src 'none';
+                   object-src 'none';
+                   base-uri 'self';" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+
+    <!-- Google Fonts Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <title>EcoPulse AI — Carbon Footprint Awareness Platform</title>
+    <style>
+      /* Critical CSS for first paint */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: 'Inter', sans-serif; background: #F0F7F4; }
+      #root { min-height: 100vh; }
+      @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+      /* Skip-nav link: visually hidden until focused */
+      .skip-link {
+        position: absolute;
+        left: -9999px;
+        top: auto;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        z-index: 9999;
+        padding: 1rem 1.5rem;
+        background: #1B4332;
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-decoration: none;
+        border-radius: 0 0 8px 0;
+      }
+      .skip-link:focus {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: auto;
+        height: auto;
+        clip: auto;
+        z-index: 9999;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Skip Navigation (Accessibility) -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <div id="root" aria-label="EcoPulse AI Application"></div>
+
+    <!-- Fallback for no-JavaScript environments -->
+    <noscript>
+      <div style="padding: 2rem; text-align: center; font-family: 'Inter', sans-serif;">
+        <h1>🌿 EcoPulse AI</h1>
+        <p style="margin-top: 1rem;">EcoPulse AI requires JavaScript to run. Please enable JavaScript in your browser settings to use this application.</p>
+      </div>
+    </noscript>
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
