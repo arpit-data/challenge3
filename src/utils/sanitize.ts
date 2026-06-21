@@ -34,6 +34,9 @@ export function sanitizeUserInput(input: string, maxLength: number = 2000): stri
 
   let sanitized = input;
 
+  // Remove null bytes (can bypass certain filters)
+  sanitized = sanitized.replace(/\0/g, '');
+
   // Remove HTML tags
   sanitized = stripHtmlTags(sanitized);
 
@@ -45,6 +48,9 @@ export function sanitizeUserInput(input: string, maxLength: number = 2000): stri
 
   // Remove data: URIs that could contain scripts
   sanitized = sanitized.replace(/data\s*:\s*text\/html/gi, '');
+
+  // Remove vbscript: protocol URIs
+  sanitized = sanitized.replace(/vbscript\s*:/gi, '');
 
   // Trim and normalize whitespace
   sanitized = sanitized.trim().replace(/\s+/g, ' ');

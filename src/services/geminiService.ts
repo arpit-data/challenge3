@@ -7,19 +7,17 @@
 import type { GoogleGenAI as GoogleGenAIType } from '@google/genai';
 import type { CarbonReport, Goal, Recommendation } from '../types';
 import { sanitizeUserInput, checkRateLimit, validateApiKeyFormat } from '../utils/sanitize';
-
-/** Maximum API calls allowed per minute for the AI chat */
-const RATE_LIMIT_MAX_CALLS = 10;
-/** Rate limit window in milliseconds (1 minute) */
-const RATE_LIMIT_WINDOW_MS = 60_000;
-/** Request timeout in milliseconds (30 seconds) */
-const REQUEST_TIMEOUT_MS = 30_000;
-/** Maximum user message length */
-const MAX_MESSAGE_LENGTH = 2000;
-/** Default reduction target percentage for fallback responses */
-const DEFAULT_REDUCTION_PERCENT = 0.15;
-/** Default fallback CO₂ savings value (kg) */
-const FALLBACK_REDUCTION_KG = 500;
+import { logger } from '../utils/logger';
+import {
+  RATE_LIMIT_MAX_CALLS,
+  RATE_LIMIT_WINDOW_MS,
+  REQUEST_TIMEOUT_MS,
+  MAX_MESSAGE_LENGTH,
+  DEFAULT_REDUCTION_TARGET,
+  FALLBACK_REDUCTION_KG,
+  GEMINI_MODEL,
+  SUMMARY_RATE_LIMIT,
+} from '../constants';
 
 const SYSTEM_PROMPT = `You are EcoPulse AI, a positive, empowering sustainability coach. Your role is to help people understand and reduce their carbon footprint through practical, achievable actions.
 
@@ -54,7 +52,7 @@ let aiInstance: GoogleGenAIType | null = null;
  */
 export async function initializeGemini(apiKey: string): Promise<boolean> {
   if (!validateApiKeyFormat(apiKey)) {
-    console.warn('Gemini AI: Invalid API key format');
+    logger.warn('Gemini AI: Invalid API key format');
     return false;
   }
 
@@ -63,7 +61,7 @@ export async function initializeGemini(apiKey: string): Promise<boolean> {
     aiInstance = new GoogleGenAI({ apiKey });
     return true;
   } catch (error) {
-    console.warn('Gemini AI initialization failed:', error);
+    logger.warn('Gemini AI initialization failed:', error);
     return false;
   }
 }
@@ -121,6 +119,21 @@ function createTimeout(ms: number): Promise<never> {
 }
 
 /**
+ * Call the Gemini model with a prompt, racing against a timeout.
+ *
+ * @param prompt - The full prompt string to send to Gemini
+ * @returns The Gemini response object
+ * @throws If the AI client is not initialized or the request times out
+ */
+async function callGemini(prompt: string): Promise<{ text?: string | null }> {
+  if (!aiInstance) throw new Error('Gemini not initialized');
+  return Promise.race([
+    aiInstance.models.generateContent({ model: GEMINI_MODEL, contents: prompt }),
+    createTimeout(REQUEST_TIMEOUT_MS),
+  ]);
+}
+
+/**
  * Send a message to the Gemini AI coach and get a personalized response.
  * Includes rate limiting, input sanitization, and timeout handling.
  *
@@ -164,21 +177,12 @@ export async function sendMessage(
     const context = buildUserContext(report, goals, recommendations);
     const fullPrompt = `${SYSTEM_PROMPT}\n\n${context}\n\nUser: ${sanitizedMessage}`;
 
-    const responsePromise = aiInstance!.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: fullPrompt,
-    });
-
-    // Race against timeout
-    const response = await Promise.race([
-      responsePromise,
-      createTimeout(REQUEST_TIMEOUT_MS),
-    ]);
+    const response = await callGemini(fullPrompt);
 
     return response.text || getFallbackResponse(sanitizedMessage, report);
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.warn('Gemini API error:', errorMessage);
+    logger.warn('Gemini API error:', errorMessage);
 
     if (errorMessage === 'Request timed out') {
       return '⏱️ The request took too long. Please try again in a moment.';
@@ -208,7 +212,7 @@ export async function generateWeeklySummary(
     return '📊 Complete your carbon assessment to receive weekly AI-powered insights!';
   }
 
-  if (!checkRateLimit('gemini-summary', 3, RATE_LIMIT_WINDOW_MS)) {
+  if (!checkRateLimit('gemini-summary', SUMMARY_RATE_LIMIT, RATE_LIMIT_WINDOW_MS)) {
     return getWeeklySummaryFallback(report, goals, recommendations);
   }
 
@@ -225,13 +229,7 @@ export async function generateWeeklySummary(
     const context = buildUserContext(report, goals, recommendations);
     const summaryPrompt = `${SYSTEM_PROMPT}\n\n${context}\n\nGenerate a brief, encouraging weekly sustainability summary for this user. Include:\n1. A one-line highlight of their progress\n2. Their top achievement this week\n3. One specific, actionable suggestion for next week\nKeep it under 100 words. Be warm and motivating.`;
 
-    const response = await Promise.race([
-      aiInstance.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: summaryPrompt,
-      }),
-      createTimeout(REQUEST_TIMEOUT_MS),
-    ]);
+    const response = await callGemini(summaryPrompt);
 
     return response.text || getWeeklySummaryFallback(report, goals, recommendations);
   } catch {
@@ -262,13 +260,7 @@ export async function generateAIRecommendations(
     const topCategory = report.breakdown[0]?.label || 'general';
     const prompt = `Based on a user whose highest carbon category is "${topCategory}" at ${report.breakdown[0]?.kgCO2e} kg CO₂e/year (total footprint: ${report.totalTonnesCO2e} tonnes/year), suggest 5 specific, actionable recommendations. Return ONLY a JSON array of strings, no other text. Each recommendation should be one concise sentence.`;
 
-    const response = await Promise.race([
-      aiInstance.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-      }),
-      createTimeout(REQUEST_TIMEOUT_MS),
-    ]);
+    const response = await callGemini(prompt);
 
     const text = response.text || '';
     try {
@@ -405,7 +397,7 @@ function getFallbackResponse(message: string, report: CarbonReport | null): stri
   }
 
   if (lowerMsg.includes('reduce') || lowerMsg.includes('lower') || lowerMsg.includes('decrease')) {
-    const target = report ? Math.round(report.totalKgCO2e * DEFAULT_REDUCTION_PERCENT) : FALLBACK_REDUCTION_KG;
+    const target = report ? Math.round(report.totalKgCO2e * DEFAULT_REDUCTION_TARGET) : FALLBACK_REDUCTION_KG;
     return `**To reduce your footprint by ~15% (${target} kg CO₂/year):**\n\n` +
       `Focus on your highest-impact category first. The biggest wins usually come from:\n\n` +
       `1. 🚗 **Transportation** — Use public transit 2x/week\n` +

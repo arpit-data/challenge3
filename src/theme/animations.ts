@@ -12,7 +12,7 @@ const prefersReducedMotion =
 
 const duration = prefersReducedMotion ? 0 : undefined;
 
-// Spring transitions
+/** Spring-based transition with moderate stiffness and damping for natural motion. */
 export const springTransition: Transition = {
   type: 'spring',
   stiffness: 260,
@@ -20,13 +20,14 @@ export const springTransition: Transition = {
   duration,
 };
 
+/** Smooth tween transition using a Material Design standard easing curve. */
 export const smoothTransition: Transition = {
   type: 'tween',
   ease: [0.4, 0, 0.2, 1],
   duration: duration ?? 0.4,
 };
 
-// Page transitions
+/** Page-level enter/exit animation variants with fade, slide, and subtle scale. */
 export const pageVariants: Variants = {
   initial: { opacity: 0, y: 20, scale: 0.98 },
   animate: {
@@ -43,7 +44,7 @@ export const pageVariants: Variants = {
   },
 };
 
-// Card entrance
+/** Card entrance animation with upward slide, fade, and slight 3D tilt. */
 export const cardVariants: Variants = {
   initial: { opacity: 0, y: 30, rotateX: -5 },
   animate: {
@@ -59,7 +60,7 @@ export const cardVariants: Variants = {
   },
 };
 
-// Stagger children
+/** Container variant that staggers the entrance of its children sequentially. */
 export const staggerContainer: Variants = {
   initial: {},
   animate: {
@@ -70,6 +71,7 @@ export const staggerContainer: Variants = {
   },
 };
 
+/** Individual stagger-child variant with fade-up entrance. Used with {@link staggerContainer}. */
 export const staggerItem: Variants = {
   initial: { opacity: 0, y: 20 },
   animate: {
@@ -79,7 +81,7 @@ export const staggerItem: Variants = {
   },
 };
 
-// Floating animation (for decorative elements)
+/** Infinite floating animation for decorative elements (gentle vertical bob). */
 export const floatVariants: Variants = {
   animate: {
     y: [0, -10, 0],
@@ -92,13 +94,13 @@ export const floatVariants: Variants = {
   },
 };
 
-// Scale on tap
+/** Interactive scale feedback on tap (0.96×) and hover (1.02×). Empty when reduced motion is preferred. */
 export const tapScale = prefersReducedMotion ? {} : {
   whileTap: { scale: 0.96 },
   whileHover: { scale: 1.02 },
 };
 
-// Fade in from direction
+/** Fade-in from below with a 40px offset. General-purpose entrance animation. */
 export const fadeInUp: Variants = {
   initial: { opacity: 0, y: 40 },
   animate: {
@@ -108,6 +110,7 @@ export const fadeInUp: Variants = {
   },
 };
 
+/** Fade-in from the left with a 40px offset. */
 export const fadeInLeft: Variants = {
   initial: { opacity: 0, x: -40 },
   animate: {
@@ -117,6 +120,7 @@ export const fadeInLeft: Variants = {
   },
 };
 
+/** Fade-in from the right with a 40px offset. */
 export const fadeInRight: Variants = {
   initial: { opacity: 0, x: 40 },
   animate: {
@@ -126,7 +130,7 @@ export const fadeInRight: Variants = {
   },
 };
 
-// Counter animation helper
+/** Counter/number animation with spring scale-up from 0.5× to 1×. */
 export const counterVariants: Variants = {
   initial: { opacity: 0, scale: 0.5 },
   animate: {
@@ -141,7 +145,7 @@ export const counterVariants: Variants = {
   },
 };
 
-// 3D card tilt (for interactive cards)
+/** 3D card tilt effect on hover with perspective and enhanced shadow. */
 export const tilt3DVariants: Variants = {
   initial: {
     rotateX: 0,
@@ -157,7 +161,7 @@ export const tilt3DVariants: Variants = {
   },
 };
 
-// Progress ring animation
+/** SVG progress ring animation that draws from 0 to a custom progress value. */
 export const progressRingVariants: Variants = {
   initial: { pathLength: 0 },
   animate: (progress: number) => ({
@@ -169,7 +173,7 @@ export const progressRingVariants: Variants = {
   }),
 };
 
-// Badge unlock
+/** Badge unlock celebration animation with spring scale-up and 180° rotation. */
 export const badgeUnlockVariants: Variants = {
   initial: { scale: 0, rotate: -180 },
   animate: {
@@ -184,7 +188,7 @@ export const badgeUnlockVariants: Variants = {
   },
 };
 
-// Notification slide in
+/** Notification slide-in from the right with spring entrance and smooth exit. */
 export const slideInRight: Variants = {
   initial: { x: 100, opacity: 0 },
   animate: {

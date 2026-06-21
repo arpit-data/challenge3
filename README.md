@@ -183,7 +183,8 @@ d:\EcoPulse AI\
 │   ├── types/
 │   │   └── index.ts          # Central TypeScript interfaces and type aliases
 │   ├── utils/
-│   │   └── sanitize.ts       # Input security, XSS filtering, and rate limiting
+│   │   ├── sanitize.ts       # Input security, XSS filtering, and rate limiting
+│   │   └── logger.ts         # Production-safe leveled logger utility
 │   ├── App.tsx               # App router declarations and theme providers
 │   ├── App.css               # Base CSS layout
 │   ├── main.tsx              # React mounting root
@@ -284,7 +285,7 @@ $$\text{Emissions} = \frac{B \times 12 \times EF_{\text{elec}} \times Eff_{\text
 
 ## 🔬 Testing Suite
 
-EcoPulse AI includes a comprehensive Vitest test suite that covers the core calculator engine, input sanitization routines, and Google Gemini API services. 
+EcoPulse AI includes a comprehensive Vitest test suite covering the core calculator engine, input sanitization routines, data validation, achievement logic, constants integrity, emission factor completeness, logger utilities, and Google Gemini API services.
 
 ### Run Unit Tests
 To run the Vitest test suite:
@@ -304,10 +305,34 @@ To analyze code coverage metrics:
 npm run test:coverage
 ```
 
-The test files cover **152 distinct assertions**:
-1.  `src/engine/__tests__/carbonCalculator.test.ts` (80 assertions): Validates transportation offsets, diet variations, electrical household division, waste recycling ratios, travel classes, and tree calculation boundaries.
-2.  `src/utils/__tests__/sanitize.test.ts` (49 assertions): Ensures XSS payloads, script tags, event handlers, and malicious links are successfully neutralized, and tests client rate limiter bounds.
-3.  `src/services/__tests__/geminiService.test.ts` (23 assertions): Verifies service prompt rendering and correct fallback behavior when API keys are absent or network requests fail.
+### Test File Index
+
+| Test File | Scope |
+| :--- | :--- |
+| `src/engine/__tests__/carbonCalculator.test.ts` | Transportation offsets, diet variations, household division, waste recycling, travel classes, tree calculation boundaries, negative inputs, and zero-household edge cases. |
+| `src/utils/__tests__/sanitize.test.ts` | XSS payloads, script tags, event handlers, malicious links, rate limiter bounds, whitespace-only input, malformed tags, and consecutive special characters. |
+| `src/services/__tests__/geminiService.test.ts` | Service prompt rendering, fallback behavior, and API key absence handling. |
+| `src/data/__tests__/data.test.ts` | Default assessment structure, leaderboard ranking integrity, recommendation completeness, challenge-task alignment, and achievement uniqueness. |
+| `src/data/__tests__/achievements.test.ts` | Achievement unlock conditions, boundary tests (7-day/30-day streaks, 100kg/500kg savings), compound conditions, re-unlock prevention, and null/empty handling. |
+| `src/constants/__tests__/constants.test.ts` | All constants are positive numbers, sensible value ranges, and guards against accidental modifications. |
+| `src/engine/__tests__/emissionFactors.test.ts` | All expected keys present, no negative emission factors, and complete frequency/multiplier variants. |
+| `src/utils/__tests__/logger.test.ts` | All 4 logger methods exist and don't throw, and the logger object is immutable. |
+
+---
+
+## 🔐 Security Features
+
+EcoPulse AI implements defense-in-depth security measures:
+
+| Layer | Implementation |
+| :--- | :--- |
+| **Content Security Policy (CSP)** | Strict `<meta>` CSP headers restrict script sources to `'self'`, font loading to Google Fonts, and API requests solely to Gemini endpoints. `frame-src` and `object-src` are set to `'none'`. |
+| **XSS Prevention** | All user chat inputs are sanitized via `stripHtmlTags()`, `javascript:` protocol removal, and `on*` event handler filtering before processing. Chat messages are rendered using React's auto-escaping (no `dangerouslySetInnerHTML`). |
+| **Rate Limiting** | A custom token-bucket rate limiter (`checkRateLimit()`) tracks requests per action key with configurable windows (e.g., 10 chat messages/minute, 3 summaries/minute). |
+| **API Key Validation** | Gemini API keys are validated for format (length, character set) before any network requests are made. Keys are stored only in `sessionStorage` (never persisted). |
+| **Storage Isolation** | Account deletion removes only EcoPulse-specific `localStorage` keys, not the entire origin's storage. |
+| **Referrer Policy** | `strict-origin-when-cross-origin` prevents leaking URL paths to third-party services. |
+| **X-Content-Type-Options** | `nosniff` header prevents MIME-type sniffing attacks. |
 
 ---
 

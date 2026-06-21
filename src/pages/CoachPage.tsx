@@ -3,7 +3,10 @@
 // Gemini-powered sustainability coach with chat interface
 // ============================================================
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+// Security: Chat messages are rendered using escapeHtml + React
+// to prevent XSS via dangerouslySetInnerHTML.
+
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -35,11 +38,31 @@ import { useChatStore, useCarbonStore, useGoalStore } from '../stores/appStore';
 import { sendMessage, getSuggestedPrompts, isGeminiConfigured, getApiKey } from '../services/geminiService';
 import { pageVariants } from '../theme/animations';
 
-/** Format a markdown-like response for display */
-function formatMessage(text: string): string {
-  return text
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\n/g, '<br/>');
+/**
+ * Parse markdown-like bold syntax and newlines into React elements.
+ *
+ * Unlike the previous implementation that used `dangerouslySetInnerHTML`,
+ * this version avoids XSS by never inserting raw HTML. Bold markers are
+ * converted to `<strong>` elements and newlines to `<br/>` elements
+ * via React.createElement, while all other text is rendered as plain
+ * text nodes (automatically escaped by React).
+ *
+ * @param text - Raw message text (may contain `**bold**` and `\n`)
+ * @returns Array of React nodes safe for rendering
+ */
+function formatMessage(text: string): React.ReactNode[] {
+  // Split on bold markers and newlines
+  const parts = text.split(/(\*\*.*?\*\*|\n)/g);
+  return parts.map((part, i) => {
+    if (part === '\n') {
+      return React.createElement('br', { key: `br-${i}` });
+    }
+    const boldMatch = part.match(/^\*\*(.+)\*\*$/);
+    if (boldMatch) {
+      return React.createElement('strong', { key: `b-${i}` }, boldMatch[1]);
+    }
+    return part; // plain text — React auto-escapes
+  });
 }
 
 export default function CoachPage() {
@@ -256,6 +279,7 @@ export default function CoachPage() {
                   transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                 >
                   <Box
+                    aria-label={msg.role === 'user' ? 'Message from user' : 'Message from AI assistant'}
                     sx={{
                       display: 'flex',
                       gap: 1.5,
@@ -312,12 +336,14 @@ export default function CoachPage() {
                     >
                       <Typography
                         variant="body2"
+                        component="div"
                         sx={{
                           lineHeight: 1.65,
                           '& strong': { fontWeight: 600 },
                         }}
-                        dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }}
-                      />
+                      >
+                        {formatMessage(msg.content)}
+                      </Typography>
                       <Typography
                         variant="caption"
                         sx={{

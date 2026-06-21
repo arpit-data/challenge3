@@ -537,6 +537,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <Box
+        component="footer"
         sx={{
           py: 4,
           px: 3,
@@ -563,6 +564,9 @@ export default function LandingPage() {
               key={link}
               variant="body2"
               onClick={() => setSnackbar({ open: true, message: 'Coming soon! 🚀' })}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSnackbar({ open: true, message: 'Coming soon! 🚀' }); } }}
+              role="button"
+              tabIndex={0}
               sx={{
                 color: theme.palette.text.secondary,
                 cursor: 'pointer',

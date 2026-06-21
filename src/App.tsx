@@ -3,7 +3,7 @@
 // Root component with routing, theme, and layout
 // ============================================================
 
-import { useMemo, lazy, Suspense } from 'react';
+import React, { useMemo, lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import { AnimatePresence } from 'framer-motion';
@@ -27,8 +27,8 @@ const ImpactBreakdownPage = lazy(() => import('./pages/ImpactBreakdownPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const ResourcesPage = lazy(() => import('./pages/ResourcesPage'));
 
-// Loading fallback
-function LoadingScreen() {
+/** Full-screen loading fallback shown while lazy-loaded route chunks are fetched. */
+function LoadingScreen(): React.JSX.Element {
   return (
     <Box
       sx={{
@@ -48,7 +48,8 @@ function LoadingScreen() {
   );
 }
 
-export default function App() {
+/** Root application component providing theming, routing, and code-split pages. */
+export default function App(): React.JSX.Element {
   const user = useUserStore((s) => s.user);
   const themePref = user?.preferences?.theme ?? 'light';
 

@@ -4,6 +4,15 @@
 
 import type { Challenge } from '../types';
 
+/**
+ * Pre-built weekly challenges that guide users through focused sustainability actions.
+ *
+ * Each challenge spans a fixed number of days and includes daily tasks, an estimated
+ * CO₂ savings value (in kg), a difficulty rating, and a badge emoji awarded on completion.
+ * Challenges cover transportation, waste, energy, food, shopping, and water categories.
+ *
+ * @readonly
+ */
 export const BUILT_IN_CHALLENGES: Challenge[] = [
   {
     id: 'green_commute_7',

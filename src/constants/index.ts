@@ -75,6 +75,48 @@ export const MAX_RECOMMENDATIONS = 8;
 // ─── AI Service (Gemini) ────────────────────────────────────────────────────
 
 /**
+ * The Gemini model identifier used for all AI requests.
+ *
+ * @see geminiService.ts — model selection
+ */
+export const GEMINI_MODEL = 'gemini-2.5-flash';
+
+/**
+ * Maximum API calls allowed per minute for the AI chat.
+ *
+ * @see geminiService.ts — sendMessage rate limiting
+ */
+export const RATE_LIMIT_MAX_CALLS = 10;
+
+/**
+ * Maximum API calls allowed per minute for weekly summary generation.
+ *
+ * @see geminiService.ts — generateWeeklySummary rate limiting
+ */
+export const SUMMARY_RATE_LIMIT = 3;
+
+/**
+ * Rate limit window in milliseconds (1 minute).
+ *
+ * @see geminiService.ts — rate limit checks
+ */
+export const RATE_LIMIT_WINDOW_MS = 60_000;
+
+/**
+ * Request timeout in milliseconds (30 seconds).
+ *
+ * @see geminiService.ts — API request timeout
+ */
+export const REQUEST_TIMEOUT_MS = 30_000;
+
+/**
+ * Maximum user message length accepted by the AI chat.
+ *
+ * @see geminiService.ts — input validation
+ */
+export const MAX_MESSAGE_LENGTH = 2000;
+
+/**
  * Number of suggested prompts shown to the user when they have
  * a carbon report available for context-aware suggestions.
  *
@@ -115,3 +157,55 @@ export const DEFAULT_REDUCTION_TARGET = 0.15;
  * @see geminiService.ts — fallback reduction amount
  */
 export const FALLBACK_REDUCTION_KG = 500;
+
+// ─── Achievement Thresholds ─────────────────────────────────────────────────
+
+/**
+ * Minimum streak length (days) required to unlock the Week Warrior achievement.
+ *
+ * @see achievements.ts — checkAchievements
+ */
+export const WEEK_WARRIOR_STREAK = 7;
+
+/**
+ * Minimum streak length (days) required to unlock the Month Master achievement.
+ *
+ * @see achievements.ts — checkAchievements
+ */
+export const MONTH_MASTER_STREAK = 30;
+
+/**
+ * Minimum CO₂ savings (kg) to unlock the Carbon Reducer achievement.
+ *
+ * @see achievements.ts — checkAchievements
+ */
+export const CARBON_REDUCER_THRESHOLD = 100;
+
+/**
+ * Minimum CO₂ savings (kg) to unlock the Half-Ton Hero achievement.
+ *
+ * @see achievements.ts — checkAchievements
+ */
+export const HALF_TON_HERO_THRESHOLD = 500;
+
+/**
+ * Minimum category-specific completed recommendations for
+ * Conscious Commuter and Green Eater achievements.
+ *
+ * @see achievements.ts — checkAchievements
+ */
+export const CATEGORY_RECS_THRESHOLD = 3;
+
+/**
+ * Minimum completed recommendations for Sustainability Champion achievement.
+ *
+ * @see achievements.ts — checkAchievements
+ */
+export const CHAMPION_RECS_THRESHOLD = 15;
+
+/**
+ * Minimum active goals for Sustainability Champion achievement.
+ *
+ * @see achievements.ts — checkAchievements
+ */
+export const CHAMPION_GOALS_THRESHOLD = 3;

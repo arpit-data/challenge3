@@ -1057,3 +1057,124 @@ describe('getComparisonText', () => {
     expect(text).toContain('Paris Agreement');
   });
 });
+
+// ===========================================================================
+// Edge Cases — Negative Inputs
+// ===========================================================================
+describe('edge cases — negative inputs', () => {
+  it('calculateTransportation handles negative commuteDistanceKm', () => {
+    const result = calculateTransportation({
+      commuteDistanceKm: -10,
+      vehicleType: 'car_petrol',
+      publicTransportDays: 0,
+      rideSharingFrequency: 'never',
+    });
+
+    // Negative distance produces a negative intermediate but the function
+    // should still return a number (may be negative — current implementation
+    // does not clamp transport). Verify it doesn't throw.
+    expect(typeof result).toBe('number');
+    expect(Number.isFinite(result)).toBe(true);
+  });
+
+  it('calculateDiet handles negative localFoodPercentage gracefully', () => {
+    const result = calculateDiet({
+      dietType: 'mixed',
+      foodWasteLevel: 'never',
+      localFoodPercentage: -50,
+    });
+
+    // Math.max(0, ...) should prevent negative final result
+    expect(result).toBeGreaterThanOrEqual(0);
+  });
+
+  it('calculateElectricity handles negative monthlyBillUSD', () => {
+    const result = calculateElectricity({
+      monthlyBillUSD: -100,
+      applianceEfficiency: 'mixed',
+      hasRenewableSource: false,
+      householdSize: 1,
+    });
+
+    // Math.max(0, ...) clamps to zero
+    expect(result).toBeGreaterThanOrEqual(0);
+  });
+
+  it('calculateShopping handles zero clothing and electronics', () => {
+    const result = calculateShopping({
+      onlineShoppingFrequency: 'rarely',
+      clothingItemsPerMonth: 0,
+      electronicsPerYear: 0,
+      prefersSustainableBrands: true,
+    });
+
+    expect(result).toBeGreaterThanOrEqual(0);
+  });
+
+  it('calculateWater handles negative showerMinutesPerDay', () => {
+    const result = calculateWater({
+      showerMinutesPerDay: -5,
+      laundryLoadsPerWeek: 0,
+      hasWaterEfficiency: false,
+    });
+
+    // Math.max(0, ...) should clamp to zero
+    expect(result).toBeGreaterThanOrEqual(0);
+  });
+
+  it('calculateTravel handles negative flight counts', () => {
+    const result = calculateTravel({
+      domesticFlightsPerYear: -3,
+      internationalFlightsPerYear: -1,
+      hotelNightsPerYear: -5,
+    });
+
+    // Current implementation does not clamp, but should not throw
+    expect(typeof result).toBe('number');
+    expect(Number.isFinite(result)).toBe(true);
+  });
+});
+
+// ===========================================================================
+// Edge Cases — householdSize = 0
+// ===========================================================================
+describe('edge cases — householdSize = 0', () => {
+  it('calculateElectricity does not divide by zero when householdSize is 0', () => {
+    const result = calculateElectricity({
+      monthlyBillUSD: 100,
+      applianceEfficiency: 'mixed',
+      hasRenewableSource: false,
+      householdSize: 0,
+    });
+
+    // The code guards with `data.householdSize > 0`, so division is skipped
+    // and the result should be the full annual amount (not Infinity or NaN)
+    expect(Number.isFinite(result)).toBe(true);
+    expect(result).toBeGreaterThan(0);
+    // Without division: 100 * 12 * 5.0 * 1.0 = 6000
+    expect(result).toBeCloseTo(6000, 0);
+  });
+});
+
+// ===========================================================================
+// Edge Cases — treesEquivalent with edge values
+// ===========================================================================
+describe('edge cases — treesEquivalent', () => {
+  it('handles zero input', () => {
+    expect(treesEquivalent(0)).toBe(0);
+  });
+
+  it('handles negative input', () => {
+    const result = treesEquivalent(-100);
+    // Math.round(-100/22) = Math.round(-4.545) = -5
+    expect(result).toBe(Math.round(-100 / 22));
+  });
+
+  it('handles very small positive input', () => {
+    expect(treesEquivalent(1)).toBe(0); // rounds to 0
+  });
+
+  it('handles exactly KG_CO2_PER_TREE', () => {
+    expect(treesEquivalent(22)).toBe(1);
+  });
+});

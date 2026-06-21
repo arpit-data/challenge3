@@ -445,6 +445,7 @@ const DashboardPage: React.FC = () => {
                   <LinearProgress
                     variant="determinate"
                     value={Math.min((item.value / maxBenchmark) * 100, 100)}
+                    aria-label={`${item.label}: ${(item.value / 1000).toFixed(1)} tonnes CO₂e`}
                     sx={{
                       height: 12,
                       borderRadius: 2,
@@ -472,7 +473,7 @@ const DashboardPage: React.FC = () => {
                   </Typography>
 
                   <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: 2 }}>
-                    <Box sx={{ width: { xs: '100%', sm: 220 }, height: 220, flexShrink: 0 }}>
+                    <Box sx={{ width: { xs: '100%', sm: 220 }, height: 220, flexShrink: 0 }} role="img" aria-label="Pie chart showing carbon footprint breakdown by category">
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                           <Pie
@@ -629,7 +630,7 @@ const DashboardPage: React.FC = () => {
                 </Tooltip>
               </Box>
 
-              <Box sx={{ width: '100%', height: 220 }}>
+              <Box sx={{ width: '100%', height: 220 }} role="img" aria-label="Area chart showing monthly CO₂ emission trends">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={monthlyTrend} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                     <defs>
@@ -802,6 +803,7 @@ const DashboardPage: React.FC = () => {
                     <LinearProgress
                       variant="determinate"
                       value={cat.percentage}
+                      aria-label={`${cat.label}: ${cat.percentage}% of total emissions`}
                       sx={{
                         mt: 0.5,
                         height: 6,

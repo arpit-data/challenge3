@@ -4,8 +4,23 @@
 
 import type { Recommendation } from '../types';
 
+/**
+ * Template shape for a built-in recommendation.
+ *
+ * Omits runtime-assigned fields (`id`, `completed`, `completedAt`) that are
+ * added when the recommendation is materialized for a specific user.
+ */
 type RecTemplate = Omit<Recommendation, 'id' | 'completed' | 'completedAt'>;
 
+/**
+ * Curated pool of eco-friendly recommendations across all lifestyle categories.
+ *
+ * Each entry specifies a title, description, category, difficulty, expected impact,
+ * cost level, and estimated annual CO₂ reduction in kilograms. A subset of these
+ * is selected and personalized for each user after an assessment.
+ *
+ * @readonly
+ */
 export const BUILT_IN_RECOMMENDATIONS: RecTemplate[] = [
   // Transportation
   {

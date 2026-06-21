@@ -4,6 +4,14 @@
 
 import type { AssessmentData } from '../types';
 
+/**
+ * Creates a fresh {@link AssessmentData} object populated with sensible defaults.
+ *
+ * Used to initialize the assessment form so every field has a valid starting
+ * value before the user begins editing.
+ *
+ * @returns A new default assessment data object with pre-filled values for all categories.
+ */
 export function getDefaultAssessment(): AssessmentData {
   return {
     transportation: {
@@ -52,7 +60,14 @@ export function getDefaultAssessment(): AssessmentData {
   };
 }
 
-// Sample community leaderboard data
+/**
+ * Sample community leaderboard entries used for demonstration and testing.
+ *
+ * Each entry includes rank, display name, avatar emoji, current streak
+ * (in days), and total CO₂ saved (in kg).
+ *
+ * @readonly
+ */
 export const SAMPLE_LEADERBOARD = [
   { rank: 1, name: 'Priya Sharma', avatar: '🌿', streak: 42, totalCO2SavedKg: 340 },
   { rank: 2, name: 'Green Warriors', avatar: '🌍', streak: 28, totalCO2SavedKg: 315 },

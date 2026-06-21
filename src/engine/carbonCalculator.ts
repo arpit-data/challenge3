@@ -10,9 +10,7 @@ import type {
   CarbonCategory,
 } from '../types';
 import { EMISSION_FACTORS } from './emissionFactors';
-
-const DAYS_PER_YEAR = 365;
-const WEEKS_PER_YEAR = 52;
+import { DAYS_PER_YEAR, WEEKS_PER_YEAR, WORK_DAYS_PER_YEAR, KG_CO2_PER_TREE } from '../constants';
 
 /**
  * Category metadata for display purposes
@@ -34,7 +32,7 @@ export function calculateTransportation(data: AssessmentData['transportation']):
   const factors = EMISSION_FACTORS.transport;
 
   // Personal vehicle commute
-  const workDaysPerYear = 250;
+  const workDaysPerYear = WORK_DAYS_PER_YEAR;
 
   // Public transport days offset (replaces vehicle commute for those days)
   const ptDays = data.publicTransportDays * WEEKS_PER_YEAR;
@@ -223,7 +221,7 @@ export function generateCarbonReport(assessment: AssessmentData): CarbonReport {
  * Average tree absorbs ~22 kg CO₂ per year
  */
 export function treesEquivalent(kgCO2e: number): number {
-  return Math.round(kgCO2e / 22);
+  return Math.round(kgCO2e / KG_CO2_PER_TREE);
 }
 
 /**

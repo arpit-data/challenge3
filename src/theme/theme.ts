@@ -5,7 +5,12 @@
 
 import { createTheme, alpha } from '@mui/material/styles';
 
-// Nature-inspired color palette
+/**
+ * Nature-inspired color palette serving as the design-token foundation.
+ *
+ * All theme colors are derived from these tokens. Update values here to
+ * propagate changes across both light and dark themes.
+ */
 const palette = {
   forestGreen: '#1B4332',
   emerald: '#2D6A4F',
@@ -24,6 +29,12 @@ const palette = {
   darkCard: '#1A2940',
 };
 
+/**
+ * Light MUI theme built on the nature-inspired {@link palette}.
+ *
+ * Includes customized typography (Inter font family), rounded shapes,
+ * gradient buttons, hover-lift card effects, and styled scrollbars.
+ */
 export const lightTheme = createTheme({
   palette: {
     mode: 'light',
@@ -182,6 +193,10 @@ export const lightTheme = createTheme({
   },
 });
 
+/**
+ * Dark MUI theme extending {@link lightTheme} with adjusted palette,
+ * glassmorphism card backgrounds, and glowing mint-green accents.
+ */
 export const darkTheme = createTheme({
   ...lightTheme,
   palette: {
@@ -231,7 +246,12 @@ export const darkTheme = createTheme({
   },
 });
 
-// 3D CSS utilities
+/**
+ * Glassmorphism CSS property sets for light and dark modes.
+ *
+ * Apply as inline styles or spread into `sx` props to achieve
+ * a frosted-glass effect with blur and saturation.
+ */
 export const glass = {
   light: {
     background: 'rgba(255, 255, 255, 0.7)',
@@ -247,6 +267,10 @@ export const glass = {
   },
 };
 
+/**
+ * Reusable CSS gradient strings for hero sections, cards, accents,
+ * success states, and warm highlights.
+ */
 export const gradients = {
   hero: `linear-gradient(135deg, ${palette.forestGreen} 0%, ${palette.emerald} 40%, ${palette.leafGreen} 100%)`,
   card: `linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(245,240,232,0.5) 100%)`,

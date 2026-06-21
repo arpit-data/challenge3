@@ -3,7 +3,24 @@
 // ============================================================
 
 import type { Achievement, CarbonReport, Goal, Recommendation } from '../types';
+import {
+  WEEK_WARRIOR_STREAK,
+  MONTH_MASTER_STREAK,
+  CARBON_REDUCER_THRESHOLD,
+  HALF_TON_HERO_THRESHOLD,
+  CATEGORY_RECS_THRESHOLD,
+  CHAMPION_RECS_THRESHOLD,
+  CHAMPION_GOALS_THRESHOLD,
+} from '../constants';
 
+/**
+ * Pre-defined achievements that users can unlock through eco-friendly actions.
+ *
+ * Achievements are organized across tiers (bronze → silver → gold → platinum)
+ * and cover milestones, streaks, impact savings, and category-specific actions.
+ *
+ * @readonly
+ */
 export const BUILT_IN_ACHIEVEMENTS: Achievement[] = [
   {
     id: 'eco_beginner',
@@ -116,7 +133,14 @@ export const BUILT_IN_ACHIEVEMENTS: Achievement[] = [
 ];
 
 /**
- * Check which achievements should be newly unlocked
+ * Evaluates all built-in achievements against the user's current progress
+ * and returns any that should be newly unlocked.
+ *
+ * @param report - The user's most recent carbon footprint report, or null if none exists.
+ * @param goals - All user-defined sustainability goals.
+ * @param recommendations - All recommendations (both completed and pending).
+ * @param alreadyUnlocked - IDs of achievements the user has already earned.
+ * @returns An array of newly unlocked {@link Achievement} objects with `unlockedAt` timestamps.
  */
 export function checkAchievements(
   report: CarbonReport | null,
@@ -138,14 +162,14 @@ export function checkAchievements(
     carbon_aware: report !== null,
     first_action: completedRecs.length >= 1,
     goal_setter: goals.length >= 1,
-    week_warrior: maxStreak >= 7,
-    carbon_reducer: totalSaved >= 100,
-    conscious_commuter: transportRecs >= 3,
-    green_eater: foodRecs >= 3,
+    week_warrior: maxStreak >= WEEK_WARRIOR_STREAK,
+    carbon_reducer: totalSaved >= CARBON_REDUCER_THRESHOLD,
+    conscious_commuter: transportRecs >= CATEGORY_RECS_THRESHOLD,
+    green_eater: foodRecs >= CATEGORY_RECS_THRESHOLD,
     challenge_champion: false, // Checked separately in challenge store
-    month_master: maxStreak >= 30,
-    half_ton_hero: totalSaved >= 500,
-    sustainability_champion: completedRecs.length >= 15 && goals.filter((g) => g.status === 'active').length >= 3,
+    month_master: maxStreak >= MONTH_MASTER_STREAK,
+    half_ton_hero: totalSaved >= HALF_TON_HERO_THRESHOLD,
+    sustainability_champion: completedRecs.length >= CHAMPION_RECS_THRESHOLD && goals.filter((g) => g.status === 'active').length >= CHAMPION_GOALS_THRESHOLD,
   };
 
   for (const achievement of BUILT_IN_ACHIEVEMENTS) {

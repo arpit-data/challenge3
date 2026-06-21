@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Carbon Calculator Engine — Configurable emission factors.
+ *
+ * Contains all emission factor data used by the carbon calculation engine.
+ * Factors are expressed in kg CO₂e per unit and sourced from EPA, IPCC AR6,
+ * DEFRA 2023, and IEA publications.
+ *
+ * @module engine/emissionFactors
+ */
+
 // ============================================================
 // EcoPulse AI — Carbon Calculator Engine
 // Configurable emission factors with documented sources
@@ -7,6 +17,9 @@
  * Emission factors are expressed in kg CO₂e per unit.
  * Sources: EPA, IPCC AR6, DEFRA 2023, IEA
  * These are configurable — update factors as better data becomes available.
+ *
+ * @readonly
+ * @type {const}
  */
 export const EMISSION_FACTORS = {
   // Transportation (kg CO₂e per km)

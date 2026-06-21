@@ -1461,6 +1461,10 @@ export default function AssessmentPage() {
         <LinearProgress
           variant="determinate"
           value={progress}
+          aria-label={`Assessment progress: step ${Math.min(currentStep + 1, totalFormSteps)} of ${totalFormSteps}`}
+          aria-valuenow={Math.round(progress)}
+          aria-valuemin={0}
+          aria-valuemax={100}
           sx={{
             height: 6,
             borderRadius: 3,
@@ -1486,6 +1490,7 @@ export default function AssessmentPage() {
           activeStep={currentStep}
           alternativeLabel
           connector={<GradientConnector />}
+          aria-label="Assessment progress"
           sx={{
             width: '100%',
             maxWidth: 820,

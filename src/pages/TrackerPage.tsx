@@ -188,19 +188,21 @@ export default function TrackerPage() {
           <LinearProgress
             variant="determinate"
             value={Math.min(100, (totalSaved / weeklyTarget) * 100)}
+            aria-label={`Weekly CO₂ savings progress: ${totalSaved} of ${weeklyTarget} kg`}
             sx={{ height: 10, borderRadius: 5 }}
           />
         </Card>
       </motion.div>
 
       {/* Filter Chips */}
-      <Box sx={{ display: 'flex', gap: 1, mb: 3, flexWrap: 'wrap' }}>
+      <Box sx={{ display: 'flex', gap: 1, mb: 3, flexWrap: 'wrap' }} role="group" aria-label="Filter options">
         {FILTERS.map((f) => (
           <Chip
             key={f.key}
             label={f.label}
             onClick={() => setFilter(f.key)}
             id={`filter-${f.key}`}
+            aria-pressed={filter === f.key}
             variant={filter === f.key ? 'filled' : 'outlined'}
             sx={{
               fontWeight: 600,
@@ -276,6 +278,7 @@ export default function TrackerPage() {
                       <LinearProgress
                         variant="determinate"
                         value={(completed / challenge.durationDays) * 100}
+                        aria-label={`${challenge.title} progress: ${completed} of ${challenge.durationDays} days`}
                         sx={{ height: 8, borderRadius: 4 }}
                       />
                     </Card>

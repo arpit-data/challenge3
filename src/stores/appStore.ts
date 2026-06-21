@@ -31,6 +31,7 @@ import { generateCarbonReport } from '../engine/carbonCalculator';
 import { getDefaultAssessment } from '../data/defaults';
 import { BUILT_IN_RECOMMENDATIONS } from '../data/recommendations';
 import { checkAchievements } from '../data/achievements';
+import { MAX_REPORT_HISTORY, MAX_RECOMMENDATIONS, PROGRESS_INCREMENT } from '../constants';
 
 // ---- User Store ----
 
@@ -124,10 +125,10 @@ export const useAssessmentStore = create<AssessmentState>()(
         })),
       completeAssessment: () => {
         const assessment = get().assessment;
-        assessment.completedAt = new Date().toISOString();
+        const completedAssessment = { ...assessment, completedAt: new Date().toISOString() };
         
         // Generate report
-        const report = generateCarbonReport(assessment);
+        const report = generateCarbonReport(completedAssessment);
         useCarbonStore.getState().setReport(report);
         
         // Generate initial recommendations
@@ -139,7 +140,7 @@ export const useAssessmentStore = create<AssessmentState>()(
           user: state.user ? { ...state.user, assessmentCompleted: true } : null,
         }));
         
-        set({ isCompleted: true, assessment });
+        set({ isCompleted: true, assessment: completedAssessment });
       },
       resetAssessment: () =>
         set({ currentStep: 0, assessment: getDefaultAssessment(), isCompleted: false }),
@@ -150,10 +151,7 @@ export const useAssessmentStore = create<AssessmentState>()(
 
 // ---- Carbon Store ----
 
-/** Maximum number of historical reports to retain (1 per week for 1 year) */
-const MAX_REPORT_HISTORY = 52;
-/** Maximum number of initial recommendations generated */
-const MAX_RECOMMENDATIONS = 8;
+
 
 /** State and actions for carbon reports and recommendations */
 interface CarbonState {
@@ -202,8 +200,7 @@ export const useCarbonStore = create<CarbonState>()(
 
 // ---- Goal Store ----
 
-/** Progress increment per daily check-in (percentage points) */
-const PROGRESS_INCREMENT = 5;
+
 
 /** State and actions for sustainability goal tracking */
 interface GoalState {
@@ -278,6 +275,7 @@ export const useGoalStore = create<GoalState>()(
 
 // ---- Challenge Store ----
 
+/** State and actions for tracking user participation in sustainability challenges */
 interface ChallengeState {
   activeProgresses: ChallengeProgress[];
   startChallenge: (challengeId: string) => void;
@@ -359,6 +357,7 @@ export const useAchievementStore = create<AchievementState>()(
 
 // ---- Chat Store ----
 
+/** State and actions for the AI Coach chat conversation history */
 interface ChatState {
   messages: ChatMessage[];
   isLoading: boolean;

@@ -100,6 +100,7 @@ export default function AppLayout() {
           <Box
             sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer', flex: 1 }}
             onClick={() => navigate('/dashboard')}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/dashboard'); } }}
             role="button"
             tabIndex={0}
             aria-label="Go to dashboard"
@@ -126,9 +127,11 @@ export default function AppLayout() {
                 <Box
                   key={item.path}
                   onClick={() => navigate(item.path)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(item.path); } }}
                   role="button"
                   tabIndex={0}
                   aria-label={`Navigate to ${item.label}`}
+                  aria-current={location.pathname === item.path ? 'page' : undefined}
                   sx={{
                     px: 2,
                     py: 1,
@@ -381,7 +384,6 @@ export default function AppLayout() {
                 variant="body2"
                 sx={{
                   color: theme.palette.text.secondary,
-                  cursor: 'pointer',
                   '&:hover': { color: theme.palette.primary.main },
                   transition: 'color 0.2s',
                 }}
